@@ -1,0 +1,123 @@
+2023.2.27
+1.已经安装好了carla sumo
+2 运行正鑫代码spawn_meshes.py发生如下报错：AttributeError: module 'carla' has no attribute 'SumoNetwork'
+ 这个文件是summit例程里改的，因此尝试通过安装summit解决这个问题
+ 3.安装summit进度：已经下好安装包，正在关联github和epic账号（已完成）
+ summit安装教程：https://adacompnus.github.io/summit-docs/getting_started/building/
+ 关联github和epic教程：https://www.unrealengine.com/zh-CN/blog/updated-authentication-process-for-connecting-epic-github-accounts
+ 
+ 安装unreal engine出现问题
+ git clone --depth 1 -b carla https://github.com/CarlaUnreal/UnrealEngine.git ~/UnrealEngine_4.26
+正克隆到 '/home/egu/UnrealEngine_4.26'...
+Username for 'https://github.com': wmy19990201
+Password for 'https://wmy19990201@github.com': 
+remote: Repository not found.
+fatal: 仓库 'https://github.com/CarlaUnreal/UnrealEngine.git/' 未找到
+
+解决方案：需要关联epic和github账号 https://www.unrealengine.com/en-US/ue-on-github
+第5步在github上确认epic的邀请需要点右上角自己的头像-》organizations
+
+目前做到：
+3. Setup and compile SUMMIT
+git clone https://github.com/AdaCompNUS/summit
+cd ~/summit
+./Update.sh 正在下载
+
+4.开始v2ray安装 安装成功，联网失败，此电脑clash也连不了网，只能用chrome插件ghelper联网
+----------------------------------------------------------------------------------------
+
+2023.2.28
+1.尝试安装ROS bridge installation for ROS 1，失败
+
+rosdep install --from-paths src --ignore-src -r
+executing command [sudo -H apt-get install ros-noetic-derived-object-msgs]
+正在读取软件包列表... 完成
+正在分析软件包的依赖关系树       
+正在读取状态信息... 完成       
+E: 无法定位软件包 ros-noetic-derived-object-msgs
+executing command [sudo -H apt-get install ros-noetic-ackermann-msgs]
+正在读取软件包列表... 完成
+正在分析软件包的依赖关系树       
+正在读取状态信息... 完成       
+E: 无法定位软件包 ros-noetic-ackermann-msgs
+ERROR: the following rosdeps failed to install
+  apt: command [sudo -H apt-get install ros-noetic-derived-object-msgs] failed
+  apt: command [sudo -H apt-get install ros-noetic-ackermann-msgs] failed
+  apt: Failed to detect successful installation of [ros-noetic-derived-object-msgs]
+  apt: Failed to detect successful installation of [ros-noetic-ackermann-msgs]
+
+
+2.安装summit：
+a.
+cp CustomAssets/EmptyMap_BuiltData.umap Unreal/CarlaUE4/Content/Carla/Maps/TestMaps/EmptyMap_BuiltData.uasset
+报错cp: 无法获取'CustomAssets/EmptyMap_BuiltData.umap' 的文件状态(stat): 没有那个文件或目录
+需要改成cp CustomAssets/EmptyMap_BuiltData.uasset Unreal/CarlaUE4/Content/Carla/Maps/TestMaps/EmptyMap_BuiltData.uasset
+b.
+make LibCarla
+报错：fatal: 无法访问 'https://github.com/llvm-mirror/libcxx.git/'：GnuTLS recv error (-110): The TLS connection was non-properly terminated.
+make: *** [Util/BuildTools/Linux.mk:129：setup] 错误 128
+解决方案：
+（1）开启clash，网络设置为手动，端口号设置成Clash提供的端口号（本机三7890）
+终端输入：
+git config --global http.https://github.com.proxy http://127.0.0.1:7890#输入Clash提供的端口号
+git config --global https.https://github.com.proxy https://127.0.0.1:7890#输入Clash提供的端口号
+
+遇到新问题fatal: 不是 git 仓库（或者直至挂载点 / 的任何父目录）
+停止在文件系统边界（未设置 GIT_DISCOVERY_ACROSS_FILESYSTEM）。
+解决方案：git init
+
+新问题fatal: bad revision 'HEAD'
+解决方案：git commit -m "initial commit"
+	git add Examples/
+	git commit -m "initial commit"
+
+make launch 报错 BuildCarlaUE4.sh: ERROR: UE4_ROOT is not defined, or points to a non-existant directory, please set this environment variable.
+安装完Unreal engine后该错误解决，报新错：
+ERROR: Unhandled exception: System.IO.DirectoryNotFoundException: Could not find a part of the path '/home/egu/SUMMIT/Unreal/CarlaUE4'.
+         at System.IO.__Error.WinIOError (System.Int32 errorCode, System.String maybeFullPath) [0x000f7] in <98fac219bd4e453693d76fda7bd96ab0>:0 
+         at System.IO.FileSystemEnumerableIterator`1[TSource].HandleError (System.Int32 hr, System.String path) [0x00006] in <98fac219bd4e453693d76fda7bd96ab0>:0 
+         at System.IO.FileSystemEnumerableIterator`1[TSource].CommonInit () [0x00054] in <98fac219bd4e453693d76fda7bd96ab0>:0 
+         at System.IO.FileSystemEnumerableIterator`1[TSource]..ctor (System.String path, System.String originalUserPath, System.String searchPattern, System.IO.SearchOption searchOption, System.IO.SearchResultHandler`1[TSource] resultHandler, System.Boolean checkHost) [0x000d6] in <98fac219bd4e453693d76fda7bd96ab0>:0 
+         at System.IO.FileSystemEnumerableFactory.CreateFileNameIterator (System.String path, System.String originalUserPath, System.String searchPattern, System.Boolean includeFiles, System.Boolean includeDirs, System.IO.SearchOption searchOption, System.Boolean checkHost) [0x00009] in <98fac219bd4e453693d76fda7bd96ab0>:0 
+         at System.IO.Directory.EnumerateFileSystemNames (System.String path, System.String searchPattern, System.IO.SearchOption searchOption, System.Boolean includeFiles, System.Boolean includeDirs) [0x00000] in <98fac219bd4e453693d76fda7bd96ab0>:0 
+         at System.IO.Directory.InternalEnumerateFiles (System.String path, System.String searchPattern, System.IO.SearchOption searchOption) [0x00000] in <98fac219bd4e453693d76fda7bd96ab0>:0 
+         at System.IO.Directory.EnumerateFiles (System.String path, System.String searchPattern, System.IO.SearchOption searchOption) [0x00038] in <98fac219bd4e453693d76fda7bd96ab0>:0 
+         at System.IO.DirectoryInfo+<CreateEnumerateFilesIterator>d__43.MoveNext () [0x00023] in <98fac219bd4e453693d76fda7bd96ab0>:0 
+         at Tools.DotNETCommon.FileUtils.FindCorrectCase (System.IO.FileInfo Info) [0x0003d] in <9069df09a9154bb99c2b5efbe2d1580c>:0 
+         at UnrealBuildTool.TargetDescriptor.ParseSingleCommandLine (Tools.DotNETCommon.CommandLineArguments Arguments, System.Boolean bUsePrecompiled, System.Boolean bSkipRulesCompile, System.Collections.Generic.List`1[T] TargetDescriptors) [0x001a1] in <fc95542ac52b4d41aca4a43134dde488>:0 
+         at UnrealBuildTool.TargetDescriptor.ParseCommandLine (Tools.DotNETCommon.CommandLineArguments Arguments, System.Boolean bUsePrecompiled, System.Boolean bSkipRulesCompile, System.Collections.Generic.List`1[T] TargetDescriptors) [0x000ea] in <fc95542ac52b4d41aca4a43134dde488>:0 
+         at UnrealBuildTool.TargetDescriptor.ParseCommandLine (Tools.DotNETCommon.CommandLineArguments Arguments, System.Boolean bUsePrecompiled, System.Boolean bSkipRulesCompile) [0x00006] in <fc95542ac52b4d41aca4a43134dde488>:0 
+         at UnrealBuildTool.BuildMode.Execute (Tools.DotNETCommon.CommandLineArguments Arguments) [0x001da] in <fc95542ac52b4d41aca4a43134dde488>:0 
+         at UnrealBuildTool.UnrealBuildTool.Main (System.String[] ArgumentsArray) [0x002bb] in <fc95542ac52b4d41aca4a43134dde488>:0
+
+
+可能要重新安装unreal engine 在安装过程中因为意外电脑死机重启
+
+2023.3.2
+1.
+problem:
+python3 spawn_imagery.py --dataset meskel_square
+Traceback (most recent call last):
+  File "spawn_imagery.py", line 128, in <module>
+    main(args)
+  File "spawn_imagery.py", line 98, in main
+    sumo_network = carla.SumoNetwork.load(str(DATA_PATH/'{}.net.xml'.format(args.dataset)))
+
+无需安装summit，安装summit如果不需要改其仿真环境的话也无需build summit
+正确解决方案：把*.egg文件加入到PYTHONPATH中即可
+export PYTHONPATH=$PYTHONPATH:/home/egu/SUMMIT/SUMMIT_0.9.8f_lite/PythonAPI/carla/dist/carla-0.9.8-py3.8-linux-x86_64.egg
+
+export PYTHONPATH=$PYTHONPATH:/home/egu/CARLA_0.9.13/PythonAPI/carla/dist/carla-0.9.13-py3.7-linux-x86_64.egg
+
+2.能使用SUMMIT运行正鑫代码，但用carla运行版本不匹配
+python API 版本0.9.8
+carla版本0.9.13
+尝试安装python0.9.8
+
+
+
+
+
+
+
+
